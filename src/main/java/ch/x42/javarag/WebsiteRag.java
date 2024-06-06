@@ -106,7 +106,7 @@ public class WebsiteRag {
         "https://grep.codeconsult.ch/2017/11/23/status-meetings-are-a-waste-of-time-and-money/",
         "https://afkazoo.ch/"
     };
-    System.out.println("Loading URLs...");
+    System.out.println(String.format("Loading %d URLs...", urls.length));
     for (String url : urls) {
       System.err.println("Loading " + url);
       final Document document = UrlDocumentLoader.load(url, documentParser);
@@ -122,7 +122,10 @@ public class WebsiteRag {
         .minScore(0.5) // we want to retrieve segments at least somewhat similar to user query
         .build();
 
-    ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
+    // This must be low if using the openAI demo key, to avoid 
+    // getting over the number of tokens limit
+    final int maxMessages = 3;
+    ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(maxMessages);
 
     return AiServices.builder(Assistant.class)
         .chatLanguageModel(chatLanguageModel)
