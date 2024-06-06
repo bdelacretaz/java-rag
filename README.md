@@ -1,2 +1,2 @@
 # java-rag
-Experimenting with RAG in Java
+Experimenting with RAG in Java.
