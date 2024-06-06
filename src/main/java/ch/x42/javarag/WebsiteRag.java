@@ -1,3 +1,5 @@
+package ch.x42.javarag;
+
 //JAVA 17
 //DEPS dev.langchain4j:langchain4j:0.31.0
 //DEPS dev.langchain4j:langchain4j-open-ai:0.31.0
@@ -71,6 +73,7 @@ public class WebsiteRag {
    */
 
   public static void main(String[] args) {
+    System.out.println("Setting up langchain4j...");
     final Assistant assistant = createAssistant();
     System.out.println("*** RAG engine ready, enter your questions at the --> prompt.");
     startConversationWith(assistant);
@@ -98,6 +101,9 @@ public class WebsiteRag {
         "https://grep.codeconsult.ch/2023/03/16/wwsw-well-written-subtly-wrong/",
         "https://grep.codeconsult.ch/2021/02/04/ssl-tls-certificates-with-lets-encrypt/",
         "https://grep.codeconsult.ch/2020/08/06/how-to-record-decent-conference-videos-without-breaking-the-bank/",
+        "https://grep.codeconsult.ch/2018/01/03/great-software-is-like-a-great-music-teacher/",
+        "https://grep.codeconsult.ch/2017/12/14/open-source-is-done-welcome-to-open-development/",
+        "https://grep.codeconsult.ch/2017/11/23/status-meetings-are-a-waste-of-time-and-money/",
         "https://afkazoo.ch/"
     };
     System.out.println("Loading URLs...");
