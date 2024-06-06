@@ -14,6 +14,7 @@ import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.UrlDocumentLoader;
 import dev.langchain4j.data.document.parser.TextDocumentParser;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.document.transformer.HtmlTextExtractor;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
@@ -87,6 +88,7 @@ public class WebsiteRag {
         .build();
 
     DocumentParser documentParser = new TextDocumentParser();
+    HtmlTextExtractor htmlTextExtractor = new HtmlTextExtractor();
     DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
     EmbeddingModel embeddingModel = new BgeSmallEnV15QuantizedEmbeddingModel();
     EmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
@@ -109,7 +111,8 @@ public class WebsiteRag {
     System.out.println(String.format("Loading %d URLs...", urls.length));
     for (String url : urls) {
       System.err.println("Loading " + url);
-      final Document document = UrlDocumentLoader.load(url, documentParser);
+      final Document textDocument = UrlDocumentLoader.load(url, documentParser);
+      final Document document = htmlTextExtractor.transform(textDocument);
       final List<TextSegment> segments = splitter.split(document);
       final List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
       embeddingStore.addAll(embeddings, segments);
@@ -124,7 +127,7 @@ public class WebsiteRag {
 
     // This must be low if using the openAI demo key, to avoid 
     // getting over the number of tokens limit
-    final int maxMessages = 3;
+    final int maxMessages = 5;
     ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(maxMessages);
 
     return AiServices.builder(Assistant.class)
